@@ -6,7 +6,7 @@ import html2canvas from "html2canvas";
 interface ExportButtonProps {
   pdfContainerRef: React.RefObject<HTMLDivElement | null>;
   annotations: {
-    type: "highlight" | "comment" | "signature";
+    type: "highlight" | "underline" | "comment" | "signature";
     x?: number;
     y?: number;
     width?: number;

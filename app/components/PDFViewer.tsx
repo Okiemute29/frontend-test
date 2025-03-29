@@ -3,7 +3,6 @@ import { Document, Page, pdfjs } from "react-pdf";
 import AnnotationToolbar from "./AnnotationToolbar";
 import ExportButton from "./ExportButton";
 import SignatureCanvas from "./SignatureCanvas";
-import { PDFDocument, rgb } from "pdf-lib";
 import Draggable from "react-draggable";
 
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -37,14 +36,13 @@ export default function PDFViewer({ file }: PDFViewerProps) {
   const [showSignaturePad, setShowSignaturePad] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [documentDimensions, setDocumentDimensions] = useState({ width: 0, height: 0 });
   
   // Create a ref for the PDF container
   const pdfContainerRef = useRef<HTMLDivElement | null>(null);
 ;
   
   // Create a ref map to store refs for each signature annotation
-  const nodeRefs = useRef<{ [key: string]: React.RefObject<HTMLElement | null> }>({});
+const nodeRefs = useRef<{ [key: string]: React.RefObject<HTMLDivElement | null> }>({});
 
 
 
@@ -61,7 +59,6 @@ export default function PDFViewer({ file }: PDFViewerProps) {
   // Update document dimensions when PDF is rendered
   const onPageRenderSuccess = (page: any) => {
     const { width, height } = page;
-    setDocumentDimensions({ width, height });
   };
 
   const handleTextSelection = () => {
@@ -132,7 +129,6 @@ export default function PDFViewer({ file }: PDFViewerProps) {
 
   // Ensure we have refs for all signature annotations
   useEffect(() => {
-    // Create refs for any new annotations
     annotations.forEach(ann => {
       if (ann.type === "signature" && !nodeRefs.current[ann.id]) {
         nodeRefs.current[ann.id] = React.createRef<HTMLDivElement>();
@@ -264,16 +260,17 @@ export default function PDFViewer({ file }: PDFViewerProps) {
                     }}
                     bounds="parent"
                     grid={[5, 5]} // Snap to a 5px grid for more precise positioning
-                    nodeRef={nodeRefs.current[signature.id]} // Pass the ref to Draggable
+                    nodeRef={nodeRefs.current[signature.id] as React.RefObject<HTMLDivElement>}
                   >
                     <div 
-                      ref={nodeRefs.current[signature.id]} 
+                      ref={nodeRefs.current[signature.id] as React.RefObject<HTMLDivElement>}
                       style={{
                         position: "absolute",
                         cursor: "move",
                         zIndex: 10,
                       }}
                     >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={signature.signatureDataUrl}
                         alt="Signature"

@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import DocumentUploader from './components/DocumentUploader';
 import PDFViewer from './components/PDFViewer';
-import AnnotationToolbar from './components/AnnotationToolbar';
 
 export default function Home() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
